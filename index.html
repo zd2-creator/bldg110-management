@@ -449,12 +449,13 @@ body.viewmode{padding-top:36px}
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxn7f1-PycwsK8oh9uElLX_L6pe_bCwP7cg64k5YM97ybZ0GTssn3p5ziJX-vb47yVW/exec';      // ה-Backend המאוחד של בניין 110
 const FORM_KEY   = 'ניהול';        // שם הלשונית בגיליון
 const FIELDS     = ['apt','name','choice'];       // שמות השדות בסדר קבוע (בלי 'declare')
-const TOTAL      = 52;                     // מספר הדירות בבניין
+const TOTAL      = 52;                     // מספר הדירות בבניין (תפריט + מפה)
+const ELIGIBLE   = 47;                     // דירות מכורות — המכנה לאחוזים ולרוב (5 טרם נמכרו)
 const DEADLINE_DEFAULT = '2026-10-03T14:00:00+03:00'; // ISO כמו '2026-09-06T23:59:59+03:00', או '' לטופס ללא מועד
 const CHOICE_YES = 'נת״מ Newmark';      // ערך ה"כן" בשדה choice (למשל 'בעד'); '' אם אין שדה בחירה
 const CHOICE_NO  = 'נ.עליון אחזקות';       // ערך ה"לא" (למשל 'נגד'); '' אם אין
-const MAJORITY_TARGET = 35; // מספר דירות "כן" לחגיגה (למשל 35 = 67%); 0 = בלי חגיגה
-const MAJORITY_SUB = 'נדרש רוב של 67% מהבניין לחברה אחת — והושג!';  // שורת הסבר בפופאפ, למשל 'נדרש רוב של 67% — ועברנו אותו!'
+const MAJORITY_TARGET = 24; // מספר דירות "כן" לחגיגה (למשל 35 = 67%); 0 = בלי חגיגה
+const MAJORITY_SUB = 'נדרש רוב של 51% מתוך 47 הדירות המכורות (24 דירות) לחברה אחת — והושג!';  // שורת הסבר בפופאפ, למשל 'נדרש רוב של 67% — ועברנו אותו!'
 // ═════════════════════════════════
 
 // ── שער כניסה ──
@@ -660,13 +661,13 @@ function checkMajority(a, b) {
   if (!MAJORITY_TARGET) return;
   const winner = a >= MAJORITY_TARGET ? CHOICE_YES : b >= MAJORITY_TARGET ? CHOICE_NO : null;
   if (!winner) return;
-  const yes = winner === CHOICE_YES ? a : b, pct = Math.round(yes / TOTAL * 100);
+  const yes = winner === CHOICE_YES ? a : b, pct = Math.round(yes / ELIGIBLE * 100);
   document.getElementById('majBanner').textContent = '🎉 הושג רוב של ' + pct + '% — ' + yes + ' דירות בחרו ב-' + winner + '!';
   document.getElementById('majBanner').style.display = 'block';
   document.getElementById('majTitle').textContent = 'הושג רוב — ' + winner;
   document.getElementById('majSub').textContent = MAJORITY_SUB;
   document.getElementById('majPct').textContent = pct + '%';
-  document.getElementById('majCount').textContent = yes + ' דירות מתוך ' + TOTAL + ' בחרו ב-' + winner;
+  document.getElementById('majCount').textContent = yes + ' דירות מתוך ' + ELIGIBLE + ' המכורות בחרו ב-' + winner;
   document.querySelector('.maj-stat').classList.add(winner === CHOICE_YES ? 'a' : 'b');
   let seen = null; try { seen = localStorage.getItem('maj_seen_' + FORM_KEY); } catch(e) {}
   if (majShown || seen) return;
@@ -733,8 +734,8 @@ function renderStats(data){
       const rows = data.rows || [], aptMap = {};
       rows.forEach(r => { const n = parseInt(r.apt); if (!isNaN(n)) aptMap[n] = String(r.choice || ''); });
       const voted = Object.keys(aptMap).map(Number);
-      const pct = Math.round(voted.length / TOTAL * 100);
-      document.getElementById('progLabel').innerHTML = voted.length + ' / ' + TOTAL + ' דירות (' + pct + '%)' + '<span class="prog-sync" id="progSync"></span>';
+      const pct = Math.round(voted.length / ELIGIBLE * 100);
+      document.getElementById('progLabel').innerHTML = voted.length + ' / ' + ELIGIBLE + ' דירות מכורות (' + pct + '%)' + '<span class="prog-sync" id="progSync"></span>';
       document.getElementById('progFill').style.width = pct + '%';
 
       const withChoice = !!CHOICE_YES;
@@ -755,18 +756,18 @@ function renderStats(data){
       }
       // פס עליון: שורה לכל חברה. הכל מתוך 52 — המילוי, המספר וקו הרוב — כדי שלא יהיו שני מדדים סותרים.
       if (MAJORITY_TARGET) {
-        const markAt = Math.round(MAJORITY_TARGET / TOTAL * 100) + '%';
+        const markAt = Math.round(MAJORITY_TARGET / ELIGIBLE * 100) + '%';
         document.getElementById('topProg').classList.add('on');
-        document.getElementById('tpLabel').textContent = voted.length + ' מתוך ' + TOTAL + ' דירות הצביעו (' + pct + '%)';
+        document.getElementById('tpLabel').textContent = voted.length + ' מתוך ' + ELIGIBLE + ' דירות הצביעו (' + pct + '%)';
         [['A', yes], ['B', no]].forEach(([s, n]) => {
           const fill = document.getElementById('tpFill' + s);
-          fill.style.width = Math.round(n / TOTAL * 100) + '%'; fill.classList.toggle('done', n >= MAJORITY_TARGET);
+          fill.style.width = Math.round(n / ELIGIBLE * 100) + '%'; fill.classList.toggle('done', n >= MAJORITY_TARGET);
           document.getElementById('tpMark' + s).style.insetInlineStart = markAt;
           document.getElementById('tpN' + s).textContent = n;
         });
         const winner = yes >= MAJORITY_TARGET ? CHOICE_YES : no >= MAJORITY_TARGET ? CHOICE_NO : null;
-        document.getElementById('tpLeft').textContent = winner ? '✓ הושג רוב — ' + winner : 'הקו הכתום = רוב נדרש, ' + MAJORITY_TARGET + ' דירות (' + Math.round(MAJORITY_TARGET / TOTAL * 100) + '%) לחברה אחת';
-        document.getElementById('tpGoal').textContent = '';
+        document.getElementById('tpLeft').textContent = winner ? '✓ הושג רוב — ' + winner : 'הקו הכתום = רוב נדרש, ' + MAJORITY_TARGET + ' דירות (51%) לחברה אחת';
+        document.getElementById('tpGoal').textContent = ELIGIBLE + ' דירות מכורות · ' + (TOTAL - ELIGIBLE) + ' טרם נמכרו';
       }
       markVotedApts(new Set(voted));
       checkMajority(yes, no);
