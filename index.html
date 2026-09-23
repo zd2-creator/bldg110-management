@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בחירת חברת ניהול לבניין · יעל רום 6</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<!-- תצוגה מקדימה בוואטסאפ: כותרת + תיאור קצר (עד ~40 תווים נכנס בשלמותו) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zd2-creator.github.io/bldg110-management/">
+<meta property="og:site_name" content="ועד הבית יעל רום 6">
+<meta property="og:title" content="🏢 בחירת חברת ניהול — הצבעת דיירים">
+<meta property="og:description" content="עד יום שישי 3.10 בשעה 14:00">
+<meta property="og:locale" content="he_IL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="🏢 בחירת חברת ניהול — הצבעת דיירים">
+<meta name="twitter:description" content="עד יום שישי 3.10 בשעה 14:00">
+<meta name="theme-color" content="#1D9E75">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body { font-family:Arial,'Heebo',sans-serif; background:#f5f5f5; direction:rtl; color:#333; line-height:1.6; }
+  .page { max-width:560px; margin:0 auto; padding:16px 16px 60px; }
+  .hero { text-align:center; padding:20px 10px 8px; }
+  .hero h1 { font-size:22px; font-weight:800; margin-bottom:6px; }
+  .hero p { color:#666; font-size:14px; }
+  .card { background:#fff; border:1px solid #ddd; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 6px 20px -12px rgba(0,0,0,.15); }
+  .card h2 { font-size:16px; margin-bottom:16px; font-weight:700; }
+
+  /* הודעת הנציגות (INTRO_HTML) */
+  .msg { font-size:14.5px; line-height:1.8; }
+  .msg p { margin-bottom:10px; }
+  .msg .vote-opts { background:#f8f9fa; border:1px solid #eee; border-radius:10px; padding:12px 14px; margin:10px 0; }
+  .msg .vote-opts div { margin:4px 0; }
+  .msg .signoff { color:#666; }
+
+  /* אקורדיון מידע (אופציונלי ב-INTRO_HTML) */
+  details.prio { border:1.5px solid #e5e5e5; border-radius:10px; margin-bottom:10px; overflow:hidden; background:#fff; }
+  details.prio summary { list-style:none; cursor:pointer; padding:13px 16px; display:flex; align-items:center; gap:10px; font-weight:700; font-size:14.5px; user-select:none; }
+  details.prio summary::-webkit-details-marker { display:none; }
+  details.prio summary .arrow { margin-inline-start:auto; transition:transform .2s; color:#999; font-size:12px; }
+  details.prio[open] summary .arrow { transform:rotate(180deg); }
+  details.prio summary .sum-cost { font-weight:800; font-size:13.5px; white-space:nowrap; }
+  .tag { font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .tag-high { background:#e0f5ee; color:#0d6e52; } .tag-mid { background:#fef3e2; color:#b26a00; } .tag-low { background:#f0f0f0; color:#777; }
+  .items { border-top:1px solid #eee; }
+  .item { display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:9px 16px; border-bottom:1px solid #f4f4f4; }
+  .item:last-child { border-bottom:none; }
+  .item .nm { font-size:13.5px; } .item .nm .qty { color:#999; font-size:12px; }
+  .item .nm .note { display:block; color:#999; font-size:11.5px; line-height:1.5; }
+  .item .cost { font-size:13px; font-weight:700; white-space:nowrap; color:#444; }
+  .cost-box { background:linear-gradient(135deg,#e0f5ee,#f0faf6); border:1.5px solid #9FE1CB; border-radius:12px; padding:16px; text-align:center; margin-top:14px; }
+  .cost-box .total { font-size:15px; color:#555; } .cost-box .total b { color:#0d6e52; }
+  .cost-box .per { font-size:24px; font-weight:800; color:#0d6e52; margin:4px 0 2px; }
+  .cost-box .cap { font-size:12.5px; color:#666; }
+  .cost-box .note-est { font-size:12.5px; color:#8a5a00; background:#fff8ec; border:1px solid #f5d9a8; border-radius:8px; padding:8px 12px; margin-top:12px; font-weight:700; line-height:1.5; }
+
+  /* שער כניסה */
+
+  /* פס התקדמות לרוב — בראש הדף */
+  .topprog { display:none; padding:14px 18px; }
+  .topprog.on { display:block; }
+  .tp-head { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:#555; margin-bottom:8px; }
+  .tp-head b { font-size:15px; color:#0d6e52; }
+  .tp-bar { position:relative; height:16px; background:#eee; border-radius:10px; overflow:hidden; }
+  /* קו היעד: הפס מודד מתוך 52 הדירות, והקו מסמן איפה עובר הרוב הנדרש —
+     כך הפס והאחוז מדברים באותה סקאלה ואי-אפשר לקרוא אותם כשני מדדים סותרים */
+  .tp-mark { position:absolute; top:0; bottom:0; width:2px; background:#b07d1e; opacity:.9; }
+  .tp-fill { height:100%; background:linear-gradient(90deg,#1D9E75,#5cc79b); border-radius:10px; transition:width .6s; width:0%; }
+  .tp-fill.done { background:linear-gradient(90deg,#0d6e52,#1D9E75); }
+  .tp-foot { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; font-size:11.5px; color:#999; margin-top:6px; }
+  .tp-foot .left { color:#b07d1e; font-weight:700; }
+
+  /* כפתור צף לטופס */
+  .fab-sign { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1D9E75; color:#fff; border:none; border-radius:30px; padding:13px 28px; font-size:15px; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:0 4px 20px rgba(29,158,117,.5); z-index:100; white-space:nowrap; animation:fabIn .5s ease, fabPulse 2s ease 1s infinite; transition:opacity .3s, transform .3s; }
+  .fab-sign.hidden { opacity:0; pointer-events:none; transform:translateX(-50%) translateY(20px); }
+  @keyframes fabIn { from{transform:translateX(-50%) translateY(40px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+  @keyframes fabPulse { 0%,100%{box-shadow:0 4px 20px rgba(29,158,117,.5)} 50%{box-shadow:0 4px 30px rgba(29,158,117,.8)} }
+
+  /* טופס */
+  .field { margin-bottom:14px; }
+  label { display:block; font-size:13px; color:#555; margin-bottom:5px; font-weight:600; }
+  label .req { color:#c0392b; }
+  input, select { width:100%; padding:11px 12px; border:1.5px solid #ccc; border-radius:8px; font-size:15px; font-family:inherit; direction:rtl; background:#fafafa; }
+  input:focus, select:focus { outline:none; border-color:#1D9E75; background:#fff; }
+  input.invalid, select.invalid { border-color:#c0392b; }
+  select option:disabled { color:#bbb; }
+  .hint { display:block; font-size:11.5px; color:#999; margin-top:5px; }
+  /* start ולא end: התוויות ב-nowrap ולכן שוות גובה, והרמז שמופיע מתחת לתפריט הדירות
+     (אחרי שיש הצבעות) לא דוחף את השדה למעלה מול שדה השם */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+  .grid2 label { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .declare { display:flex; gap:9px; align-items:flex-start; background:#f8f9fa; border:1px solid #e5e5e5; border-radius:9px; padding:12px 13px; margin:4px 0 14px; font-size:13px; color:#444; font-weight:400; line-height:1.5; cursor:pointer; }
+  .declare input { width:18px; height:18px; flex-shrink:0; margin-top:1px; accent-color:#1D9E75; cursor:pointer; }
+  .declare.invalid { border-color:#c0392b; background:#fdecea; }
+  .choice-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .choice-card { border:2px solid #ddd; border-radius:10px; padding:16px 10px; text-align:center; cursor:pointer; transition:all .18s; background:#fff; }
+  .choice-card .ic { font-size:28px; margin-bottom:6px; }
+  .choice-card .t { font-weight:700; font-size:15px; }
+  .choice-card .s { font-size:11.5px; color:#999; margin-top:2px; }
+  .choice-card:hover { border-color:#aaa; }
+  .choice-card.sel { border-color:#1D9E75; background:#e0f5ee; } .choice-card.sel .t { color:#0d6e52; }
+  .choice-card.sel-no { border-color:#c0392b; background:#fdecea; } .choice-card.sel-no .t { color:#8e2b20; }
+  #sigCanvas { width:100%; height:110px; border:1.5px solid #ccc; border-radius:8px; touch-action:none; background:#fff; display:block; }
+  .sig-clear { font-size:12px; color:#888; background:none; border:1px solid #ddd; border-radius:6px; padding:4px 10px; margin-top:6px; cursor:pointer; }
+  .btn { width:100%; padding:13px; background:#1D9E75; color:#fff; border:none; border-radius:10px; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:4px; }
+  .btn:disabled { background:#aaa; cursor:not-allowed; }
+  .err { color:#c0392b; font-size:13px; margin-top:8px; display:none; } .err.show { display:block; }
+  .loading { display:none; text-align:center; padding:10px; color:#666; font-size:14px; }
+  .success { text-align:center; padding:34px 18px; background:linear-gradient(135deg,#e0f5ee,#f0faf6) !important; border:2px solid #1D9E75 !important; animation:popIn .5s cubic-bezier(.175,.885,.32,1.275); }
+  .success .big { font-size:64px; } .success h2 { font-size:24px; color:#0d6e52; margin:8px 0 8px; font-weight:800; }
+  .success p { font-size:16px; color:#0d6e52; font-weight:700; } .success .succ-sub { font-size:13.5px; color:#555; font-weight:400; margin-top:10px; }
+  .sending { display:none; text-align:center; padding:14px 10px 6px; }
+  .sending .mini-spin { display:inline-block; width:20px; height:20px; border:3px solid #e0f5ee; border-top-color:#1D9E75; border-radius:50%; animation:spin .8s linear infinite; vertical-align:-5px; margin-inline-end:8px; }
+  .sending .st { font-size:14.5px; font-weight:700; color:#333; } .sending small { display:block; color:#888; font-size:12px; margin-top:6px; line-height:1.5; }
+
+  /* דדליין */
+  .deadline { display:none; background:#fff8ec; border:1.5px solid #f5d9a8; border-radius:12px; padding:12px 16px; text-align:center; font-size:14px; font-weight:700; color:#8a5a00; margin-bottom:16px; }
+  .deadline .cd { display:block; font-size:12.5px; font-weight:600; color:#b07d1e; margin-top:3px; }
+  .closed { text-align:center; padding:30px 20px; border:2px solid #e0b4ae !important; background:#fdf3f2 !important; }
+  .closed .big { font-size:50px; } .closed h2 { color:#a33224; font-size:20px; margin:8px 0 8px; }
+  .closed p { color:#7a4b44; font-size:14.5px; margin-bottom:6px; }
+
+  /* חגיגת רוב */
+  .maj-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1000; align-items:center; justify-content:center; animation:fadeIn .4s ease; }
+  .maj-overlay.show { display:flex; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .maj-card { background:#fff; border-radius:20px; padding:34px 28px; text-align:center; max-width:370px; width:88%; box-shadow:0 20px 60px rgba(0,0,0,.3); animation:popIn .5s cubic-bezier(.175,.885,.32,1.275); }
+  @keyframes popIn { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
+  .maj-emoji { font-size:56px; animation:bounce 1.2s ease infinite; display:inline-block; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .maj-title { font-size:22px; font-weight:800; color:#0d6e52; margin:10px 0 6px; }
+  .maj-sub { font-size:14.5px; color:#555; line-height:1.7; margin-bottom:16px; }
+  .maj-stat { background:linear-gradient(135deg,#e0f5ee,#c8edd9); border:2px solid #1D9E75; border-radius:14px; padding:14px; margin-bottom:18px; }
+  .maj-stat .big-pct { font-size:38px; font-weight:800; color:#0d6e52; line-height:1.1; }
+  .maj-stat .small { font-size:13px; color:#177a5c; font-weight:700; }
+  .maj-btn { background:#1D9E75; color:#fff; border:none; border-radius:12px; padding:13px 26px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; width:100%; }
+  #confettiCanvas { position:fixed; inset:0; pointer-events:none; z-index:1001; display:none; }
+  .maj-banner { display:none; background:linear-gradient(135deg,#e0f5ee,#d2f0e2); border:2px solid #1D9E75; border-radius:12px; padding:13px 16px; text-align:center; font-size:14.5px; font-weight:800; color:#0d6e52; margin-bottom:16px; }
+
+  /* התקדמות */
+  .prog { background:#fff; border:1px solid #ddd; border-radius:12px; padding:16px; margin-top:16px; }
+  .prog-top { display:flex; justify-content:space-between; font-size:13px; color:#555; margin-bottom:8px; }
+  .prog-top strong { color:#1D9E75; }
+  .prog-loading { text-align:center; padding:22px 10px 14px; color:#666; font-size:13.5px; }
+  .prog-loading .mini-spin { display:inline-block; width:18px; height:18px; border:3px solid #e0f5ee; border-top-color:#1D9E75; border-radius:50%; animation:spin .8s linear infinite; vertical-align:-4px; margin-inline-end:8px; }
+  .prog-loading small { display:block; color:#aaa; font-size:11.5px; margin-top:6px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .prog-sync { font-size:11px; color:#aaa; font-weight:400; margin-inline-start:6px; }
+  .prog-bar { height:12px; background:#eee; border-radius:10px; overflow:hidden; }
+  .prog-fill { height:100%; background:#1D9E75; border-radius:10px; transition:width .5s; width:0%; }
+  .vote-sum { display:none; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 4px; }
+  .vote-sum.on { display:grid; }
+  .vbox { border-radius:10px; padding:12px; text-align:center; }
+  .vbox.yes { background:#e0f5ee; border:1px solid #9FE1CB; } .vbox.no { background:#fdecea; border:1px solid #f5c6c0; }
+  .vbox .n { font-size:26px; font-weight:800; } .vbox.yes .n { color:#0d6e52; } .vbox.no .n { color:#c0392b; }
+  .vbox .l { font-size:12px; color:#777; }
+  .map-label { font-size:12.5px; font-weight:700; color:#555; margin-top:12px; }
+  .legend { display:flex; gap:12px; font-size:11px; color:#888; margin:6px 0 8px; flex-wrap:wrap; }
+  .legend span { display:flex; align-items:center; gap:4px; }
+  .sw { width:12px; height:12px; border-radius:3px; display:inline-block; }
+  .apt-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(40px,1fr)); gap:5px; }
+  .apt-cell { height:36px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+  .apt-yes { background:#e0f5ee; color:#0F6E56; border:1px solid #9FE1CB; }
+  .apt-no  { background:#fdecea; color:#c0392b; border:1px solid #f5c6c0; }
+  .apt-off { background:#f5f5f5; color:#ccc; border:1px dashed #e0e0e0; }
+  .success .resend { margin-top:16px; background:none; border:1px solid #9FE1CB; color:#0d6e52; border-radius:8px; padding:8px 18px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; }
+
+  /* ── בחירה ניטרלית בין שתי חברות: צבע לכל חברה, משקל שווה ── */
+  :root { --a:#2563eb; --a-bg:#e8effc; --a-bd:#b9cdf7; --b:#7c3aed; --b-bg:#efe8fd; --b-bd:#d2c1f6; }
+  .cos { display:grid; gap:12px; margin:12px 0 4px; }
+  .co { border:1.5px solid #e5e5e5; border-radius:12px; padding:14px 16px; background:#fff; }
+  .co.co-a { border-inline-start:5px solid var(--a); } .co.co-b { border-inline-start:5px solid var(--b); }
+  .co .co-name { font-weight:800; font-size:16px; margin-bottom:4px; }
+  .co.co-a .co-name { color:var(--a); } .co.co-b .co-name { color:var(--b); }
+  .co p { font-size:14px; color:#444; margin-bottom:10px; }
+  .co .doc { display:inline-block; font-size:13px; font-weight:700; text-decoration:none; padding:8px 14px; border-radius:8px; border:1.5px solid; }
+  .co.co-a .doc { color:var(--a); border-color:var(--a-bd); background:var(--a-bg); }
+  .co.co-b .doc { color:var(--b); border-color:var(--b-bd); background:var(--b-bg); }
+  .msg .note { font-size:13px; color:#666; background:#f8f9fa; border-radius:8px; padding:9px 12px; }
+  .choice-card.sel-a { border-color:var(--a); background:var(--a-bg); } .choice-card.sel-a .t { color:var(--a); }
+  .choice-card.sel-b { border-color:var(--b); background:var(--b-bg); } .choice-card.sel-b .t { color:var(--b); }
+  .vbox.a { background:var(--a-bg); border:1px solid var(--a-bd); } .vbox.a .n { color:var(--a); }
+  .vbox.b { background:var(--b-bg); border:1px solid var(--b-bd); } .vbox.b .n { color:var(--b); }
+  .apt-a { background:var(--a-bg); color:var(--a); border:1px solid var(--a-bd); }
+  .apt-b { background:var(--b-bg); color:var(--b); border:1px solid var(--b-bd); }
+  .tp-row { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; margin-top:8px; }
+  .tp-name { font-size:12.5px; font-weight:700; white-space:nowrap; min-width:96px; }
+  .tp-name.a { color:var(--a); } .tp-name.b { color:var(--b); }
+  .tp-n { font-size:15px; font-weight:800; min-width:24px; text-align:center; }
+  .tp-n.a { color:var(--a); } .tp-n.b { color:var(--b); }
+  .tp-fill.a { background:linear-gradient(90deg,var(--a),#6d9af3); } .tp-fill.b { background:linear-gradient(90deg,var(--b),#a98cf2); }
+  .tp-fill.done { box-shadow:inset 0 0 0 2px #fff; }
+  .maj-stat.a { background:var(--a-bg); border-color:var(--a); } .maj-stat.a .big-pct, .maj-stat.a .small { color:var(--a); }
+  .maj-stat.b { background:var(--b-bg); border-color:var(--b); } .maj-stat.b .big-pct, .maj-stat.b .small { color:var(--b); }
+
+  /* ── לוגו הבניין ── */
+  .brandlogo { display:block; margin:0 auto 14px; width:280px; max-width:82%; height:auto; }
+  @media print { .brandlogo { width:220px; margin-bottom:10px; } }
+</style>
+
+<!-- ════════════════════════════════════════════════════════════════
+     שער כניסה אחיד לטפסי בניין 110 — להדביק ב-<head> של כל דף
+     (טופס ציבורי + עמוד האב). לא באדמין — לאדמין יש סיסמה משלו.
+
+     לפני ההדבקה: להחליף FORM = <שם הלשונית של הטופס>.
+     כלום אחר לא צריך שינוי — כתובת ה-Backend כתובה כאן במפורש
+     בכוונה (ראה הערה בסוף הקובץ).
+     ════════════════════════════════════════════════════════════════ -->
+
+<style id="gateViewCss">
+.bgate-view{position:fixed;top:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#8a5a00,#b07d1e);color:#fff;text-align:center;font-size:13px;font-weight:700;padding:8px 14px;font-family:'Heebo',Arial,sans-serif;direction:rtl;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.bgate-view span{opacity:.9;font-weight:400}
+body.viewmode{padding-top:36px}
+.bgate-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;font-weight:700;z-index:99998;font-family:'Heebo',Arial,sans-serif;direction:rtl;box-shadow:0 8px 30px rgba(0,0,0,.3);animation:bgtIn .3s ease}
+@keyframes bgtIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
+<style id="gateCss">
+.bgate{position:fixed;inset:0;background:linear-gradient(180deg,#eef7f3,#f5f5f5);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px;font-family:'Heebo',Arial,sans-serif;direction:rtl}
+.bgate-box{background:#fff;border-radius:16px;padding:34px 28px;width:100%;max-width:360px;text-align:center;border:1px solid #d6e9df;box-shadow:0 12px 40px -18px rgba(0,0,0,.25)}
+.bgate-box .ic{font-size:44px;margin-bottom:10px}
+.bgate-box h2{font-size:18px;font-weight:800;margin:0 0 6px;color:#333}
+.bgate-box p{font-size:13.5px;color:#666;margin:0 0 18px;line-height:1.6}
+.bgate-box input{width:100%;padding:12px;border:1.5px solid #ccc;border-radius:8px;font-size:18px;text-align:center;letter-spacing:1px;margin-bottom:12px;font-family:inherit}
+.bgate-box input:focus{outline:none;border-color:#1D9E75}
+.bgate-box button{width:100%;padding:12px;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.bgate-box button:disabled{background:#aaa}
+.bgate-err{color:#c0392b;font-size:13px;margin-top:10px;display:none}
+.bgate-rem{font-size:11.5px;color:#999;margin-top:12px}
+</style>
+<script id="BLDG_GATE">
+/* ── שער כניסה אחיד לכל טפסי הבניין ──
+   הסיסמה נבדקת בשרת (GATE_ALL ב-Script Properties) ונשמרת במכשיר.
+   מפתח משותף: הזנה אחת פותחת את כל הטפסים. */
+(function(){
+  var KEY = 'bldg110_gate', FORM = 'ניהול';
+  var API = 'https://script.google.com/macros/s/';
+  var G = ''; try { G = localStorage.getItem(KEY) || ''; } catch(e) {}
+  window.BLDG_GATE = { get: function(){ return G; } };
+
+  function isApi(u){ return String(u).indexOf(API) === 0; }
+
+  /* כל קריאה לשרת נושאת אוטומטית את הסיסמה; תשובת gated מחזירה את מסך הכניסה */
+  var of = window.fetch;
+  window.fetch = function(u, o){
+    try {
+      if (G && isApi(u)) {
+        if (o && o.method === 'POST' && typeof o.body === 'string') {
+          var b = JSON.parse(o.body); b.gate = G;
+          o = Object.assign({}, o, { body: JSON.stringify(b) });
+        } else {
+          u = u + (String(u).indexOf('?') > -1 ? '&' : '?') + 'gate=' + encodeURIComponent(G);
+        }
+      }
+    } catch(e) {}
+    var pr = of(u, o);
+    if (isApi(u)) {
+      pr.then(function(r){
+        try { r.clone().json().then(function(d){
+          if (d && d.status === 'gated') { G = ''; try { localStorage.removeItem(KEY); localStorage.removeItem(MKEY); } catch(e) {} show('הסיסמה השתנתה — הזינו שוב'); }
+          else if (d && d.status === 'viewOnly') { toast('👁️ מצב תצוגה — לא ניתן לשלוח'); applyView(); }
+        }).catch(function(){}); } catch(e) {}
+      }).catch(function(){});
+    }
+    return pr;
+  };
+
+  function show(msg){
+    if (document.getElementById('bgate')) return;
+    var d = document.createElement('div');
+    d.className = 'bgate'; d.id = 'bgate';
+    d.innerHTML = '<div class="bgate-box"><div class="ic">🔒</div>' +
+      '<h2>טופס לדיירי הבניין בלבד</h2>' +
+      '<p>הזינו את הסיסמה שקיבלתם בקבוצת הוואטסאפ</p>' +
+      '<input id="bgIn" placeholder="סיסמה" autocomplete="off" />' +
+      '<button id="bgBtn">כניסה</button>' +
+      '<div class="bgate-err" id="bgErr"></div>' +
+      '<div class="bgate-rem">✓ נזכור אותך במכשיר — פעם אחת לכל הטפסים</div></div>';
+    (document.body || document.documentElement).appendChild(d);
+    var err = document.getElementById('bgErr');
+    if (msg) { err.textContent = msg; err.style.display = 'block'; }
+    var inp = document.getElementById('bgIn'), btn = document.getElementById('bgBtn');
+    setTimeout(function(){ try { inp.focus(); } catch(e) {} }, 100);
+    function go(){
+      var v = inp.value.trim(); if (!v) return;
+      btn.disabled = true; btn.textContent = 'בודק…';
+      var base = (typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL) ? SCRIPT_URL : 'https://script.google.com/macros/s/AKfycbxn7f1-PycwsK8oh9uElLX_L6pe_bCwP7cg64k5YM97ybZ0GTssn3p5ziJX-vb47yVW/exec';
+      of(base + '?action=gateCheck&form=' + encodeURIComponent(FORM) + '&gate=' + encodeURIComponent(v))
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if (d.status === 'ok') { try { localStorage.setItem(KEY, v); localStorage.setItem(MKEY, d.mode || 'full'); } catch(e) {} location.reload(); }
+          else { err.textContent = '❌ סיסמה שגויה'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'כניסה'; }
+        })
+        .catch(function(){ err.textContent = 'שגיאה בחיבור — נסו שוב'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'כניסה'; });
+    }
+    btn.onclick = go;
+    inp.onkeydown = function(ev){ if (ev.key === 'Enter') go(); };
+  }
+
+  /* ── מצב תצוגה: רואים הכל, אי אפשר לשלוח ── */
+  var MKEY = 'bldg110_gate_mode';
+  var MODE = ''; try { MODE = localStorage.getItem(MKEY) || ''; } catch(e) {}
+  window.BLDG_GATE.mode = function(){ return MODE; };
+
+  function toast(msg){
+    var t = document.createElement('div');
+    t.className = 'bgate-toast'; t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 3200);
+  }
+  function applyView(){
+    if (MODE !== 'view' || document.getElementById('bgview')) return;
+    var b = document.createElement('div');
+    b.className = 'bgate-view'; b.id = 'bgview';
+    b.innerHTML = '👁️ מצב תצוגה — <span>אפשר לראות הכל, אך לא לשלוח</span>';
+    document.body.appendChild(b);
+    document.body.classList.add('viewmode');
+    ['submitBtn'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) { el.disabled = true; el.textContent = '👁️ מצב תצוגה — שליחה חסומה'; }
+    });
+    var s = document.querySelector('.btn-submit');
+    if (s) { s.disabled = true; s.textContent = '👁️ מצב תצוגה — שליחה חסומה'; }
+  }
+  window.BLDG_GATE.applyView = applyView;
+  if (MODE === 'view') { if (document.body) applyView(); else document.addEventListener('DOMContentLoaded', applyView); }
+  window.BLDG_GATE.show = show;
+  if (!G) { if (document.body) show(); else document.addEventListener('DOMContentLoaded', function(){ show(); }); }
+})();
+</script>
+
+<!-- ─────────────────── הערות תחזוקה ───────────────────
+  · isApi() משווה מול קידומת ה-API כטקסט מפורש ולא מול SCRIPT_URL.
+    זו לא כפילות מיותרת: הסקריפט הזה רץ ב-<head>, לפני ש-SCRIPT_URL
+    מוגדר בסקריפט הראשי. גרסה שקראה ל-SCRIPT_URL קיבלה מחרוזת ריקה,
+    ה-wrapper לא זיהה אף קריאה, הסיסמה לא נשלחה, וכל הדף חזר gated.
+
+  · ה-wrapper עוטף את window.fetch ולכן כל קריאה בדף — קיימת או עתידית —
+    נושאת את הסיסמה אוטומטית. אין צורך לגעת בקוד הקיים של הדף.
+
+  · תשובת 'gated' מהשרת מנקה את הסיסמה מהמכשיר ומחזירה את מסך הכניסה
+    (למשל אחרי שהוועד החליף סיסמה). תשובת 'viewOnly' מדליקה מצב תצוגה.
+
+  · הכפתורים שמנוטרלים במצב תצוגה: #submitBtn ו-.btn-submit. טופס עם
+    כפתור שליחה בשם אחר — להוסיף אותו לרשימה ב-applyView().
+────────────────────────────────────────────────────── -->
+
+
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <img class="brandlogo" src="logo.png" alt="יעל רום 6, ראשון לציון" width="600" height="199" />
+    <h1>בחירת חברת ניהול לבניין</h1>
+    <p>שתי חברות בשלב הסופי · הבחירה של כלל הדיירים</p>
+  </div>
+
+  <div class="card topprog" id="topProg">
+    <div class="tp-head"><span>התקדמות ההצבעה</span><b id="tpLabel">—</b></div>
+    <div class="tp-row"><span class="tp-name a">נת״מ Newmark</span><div class="tp-bar"><div class="tp-fill a" id="tpFillA"></div><i class="tp-mark" id="tpMarkA"></i></div><b class="tp-n a" id="tpNA">–</b></div>
+    <div class="tp-row"><span class="tp-name b">נ.עליון אחזקות</span><div class="tp-bar"><div class="tp-fill b" id="tpFillB"></div><i class="tp-mark" id="tpMarkB"></i></div><b class="tp-n b" id="tpNB">–</b></div>
+    <div class="tp-foot"><span id="tpLeft" class="left"></span><span id="tpGoal"></span></div>
+  </div>
+
+  <div class="deadline" id="deadlineBox">
+    <span id="deadlineText">⏳ הטופס פתוח</span>
+    <span class="cd" id="countdown"></span>
+  </div>
+
+  <div class="maj-banner" id="majBanner">🎉 הושג רוב!</div>
+
+  <div class="card closed" id="closedCard" style="display:none">
+    <div class="big">⏰</div>
+    <h2>הטופס נסגר</h2>
+    <p id="closedText">המועד האחרון למילוי עבר.</p>
+    <p>לא ניתן לשלוח יותר. תודה לכל מי שהשתתף 🙏</p>
+  </div>
+
+  <div class="card msg">
+    <p><b>שלום לכולם,</b><br>לאחר תהליך בדיקה של מספר חברות ניהול, הגענו לשלב הסופי עם שתי חברות. לכל אחת יתרונות לצד נקודות שחשוב לבחון — לכן מצורפים שני ההסכמים וההצעות המלאים, ומומלץ לעיין בשניהם לפני ההצבעה.</p>
+    <div class="cos">
+      <div class="co co-a">
+        <div class="co-name">נת״מ Newmark</div>
+        <p>החברה מאושרת על ידי בעלי שטחי המסחר, ולכן קיימת אפשרות להתקדם לניהול משותף ואחיד של כלל המתחם — הבניין והמסחר.</p>
+        <a class="doc" href="docs/newmark.pdf" target="_blank" rel="noopener">📄 ההסכם וההצעה המלאים</a>
+      </div>
+      <div class="co co-b">
+        <div class="co-name">נ.עליון אחזקות בע״מ</div>
+        <p>התקבלו לגביה חוות דעת חיוביות ממכרים ומדיירים בבניינים שבהם החברה מספקת שירותי ניהול.</p>
+        <a class="doc" href="docs/naalyon.pdf" target="_blank" rel="noopener">📄 ההסכם וההצעה המלאים</a>
+      </div>
+    </div>
+    <p class="note">מעבר לכך קיימים הבדלים נוספים בין ההצעות בנושאי עלויות, היקף השירותים, תחזוקה, נוכחות בבניין ותנאי ההתקשרות.</p>
+    <p>📌 <b>הבחירה היא שלכם — כלל דיירי הבניין.</b> לאחר בחירת החברה, הנציגות תמשיך לעבוד מולה כדי לעבור על ההסכם, לחדד סעיפים שדורשים התאמה, ולגבש את הנוסח הסופי לפני החתימה.</p>
+    <p class="signoff">תודה על שיתוף הפעולה 🙏 — הנציגות</p>
+  </div>
+
+  <div class="card" id="formCard">
+    <h2>🗳️ ההצבעה שלי</h2>
+    <label>באיזו חברת ניהול את/ה בוחר/ת? <span class="req">*</span></label>
+    <div class="choice-cards">
+      <div class="choice-card" data-opt="a" onclick="selectChoice('נת״מ Newmark', this)"><div class="ic">🏢</div><div class="t">נת״מ Newmark</div></div>
+      <div class="choice-card" data-opt="b" onclick="selectChoice('נ.עליון אחזקות', this)"><div class="ic">🏢</div><div class="t">נ.עליון אחזקות</div></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>מספר דירה <span class="req">*</span></label>
+        <select id="f_apt"><option value="" disabled selected>בחר/י דירה</option></select>
+        <span class="hint" id="aptHint" style="display:none">✓ = כבר הצביעה</span></div>
+      <div class="field"><label>שם בעל/ת הדירה <span class="req">*</span></label><input id="f_name" placeholder="ישראל ישראלי" autocomplete="name" /></div>
+    </div>
+    <label class="declare"><input type="checkbox" id="f_declare" /><span>אני מאשר/ת שאני בעל/ת הדירה (או מטעמה), ושזו הצבעתי לבחירת חברת הניהול.</span></label>
+    <div id="formErr" class="err"></div>
+    <button class="btn" id="submitBtn">שליחה ✓</button>
+    <div class="sending" id="loading"><span class="mini-spin"></span><span class="st" id="sendText">שולח…</span><small id="sendSub">אנא המתן — לא לסגור את הדף</small></div>
+  </div>
+
+  <div class="prog" id="progCard">
+    <div class="prog-top"><span>התקדמות</span><strong id="progLabel"><span class="prog-sync" id="progSync"></span></strong></div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-loading" id="progLoading"><span class="mini-spin"></span><span id="progLdText">מושך את הנתונים מהשרת המאובטח…</span><small>בפעם הראשונה זה לוקח כמה שניות ☕ — אחר כך מיידי</small></div>
+    <div id="progBody">
+    <div class="vote-sum" id="voteSum">
+      <div class="vbox a"><div class="n" id="cntYes">—</div><div class="l" id="lblYes"></div></div>
+      <div class="vbox b"><div class="n" id="cntNo">—</div><div class="l" id="lblNo"></div></div>
+    </div>
+    <div class="map-label">מפת דירות</div>
+    <div class="legend" id="legend"></div>
+    <div class="apt-grid" id="aptGrid"></div>
+    </div>
+  </div>
+</div>
+
+<button class="fab-sign hidden" id="fabSign" onclick="scrollToForm()">🗳️ להצבעה ↓</button>
+<div class="maj-overlay" id="majOverlay">
+  <div class="maj-card">
+    <span class="maj-emoji">🎉</span>
+    <div class="maj-title" id="majTitle">הושג רוב!</div>
+    <div class="maj-sub" id="majSub"></div>
+    <div class="maj-stat">
+      <div class="big-pct" id="majPct">—</div>
+      <div class="small" id="majCount"></div>
+    </div>
+    <button class="maj-btn" onclick="closeMaj()">מעולה! 🎉</button>
+  </div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+
+<script>
+// ═══ הגדרות — הסקיל ממלא אותן ═══
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxn7f1-PycwsK8oh9uElLX_L6pe_bCwP7cg64k5YM97ybZ0GTssn3p5ziJX-vb47yVW/exec';      // ה-Backend המאוחד של בניין 110
+const FORM_KEY   = 'ניהול';        // שם הלשונית בגיליון
+const FIELDS     = ['apt','name','choice'];       // שמות השדות בסדר קבוע (בלי 'declare')
+const TOTAL      = 52;                     // מספר הדירות בבניין
+const DEADLINE_DEFAULT = '2026-10-03T14:00:00+03:00'; // ISO כמו '2026-09-06T23:59:59+03:00', או '' לטופס ללא מועד
+const CHOICE_YES = 'נת״מ Newmark';      // ערך ה"כן" בשדה choice (למשל 'בעד'); '' אם אין שדה בחירה
+const CHOICE_NO  = 'נ.עליון אחזקות';       // ערך ה"לא" (למשל 'נגד'); '' אם אין
+const MAJORITY_TARGET = 35; // מספר דירות "כן" לחגיגה (למשל 35 = 67%); 0 = בלי חגיגה
+const MAJORITY_SUB = 'נדרש רוב של 67% מהבניין לחברה אחת — והושג!';  // שורת הסבר בפופאפ, למשל 'נדרש רוב של 67% — ועברנו אותו!'
+// ═════════════════════════════════
+
+// ── שער כניסה ──
+// כל הלוגיקה יושבת בקטע BLDG_GATE שב-<head> (assets/gate-snippet.html):
+// הוא עוטף את fetch ומזריק את הסיסמה לכל קריאה, מציג את מסך הכניסה,
+// ומטפל בתשובות 'gated' (סיסמה השתנתה) ו-'viewOnly' (מצב תצוגה).
+// כאן נשארת שאלה אחת בלבד: האם יש סיסמה במכשיר — כדי לא לירות קריאה שתיכשל.
+const GATED = true;
+function hasGate(){ try { return !!(window.BLDG_GATE && window.BLDG_GATE.get()); } catch(e) { return false; } }
+
+const NOUN = 'הצבעות';
+// ── כפתור צף שגולל לטופס; נעלם כשהטופס נראה או אחרי שליחה ──
+const fabBtn = document.getElementById('fabSign'), formCardEl = document.getElementById('formCard');
+let fabDone = false;
+function scrollToForm(){ fabDone = true; fabBtn.classList.add('hidden'); formCardEl.scrollIntoView({ behavior:'smooth', block:'start' }); }
+function fabCheck(){
+  if (fabDone || formCardEl.style.display === 'none') { fabBtn.classList.add('hidden'); return; }
+  const r = formCardEl.getBoundingClientRect();
+  fabBtn.classList.toggle('hidden', r.top + r.height * 0.4 < innerHeight);
+}
+addEventListener('scroll', fabCheck, { passive:true });
+setTimeout(fabCheck, 1200);
+// ── זיכרון קבוע במכשיר: מי ששלח רואה את האישור גם אחרי סגירת הדף ──
+const DONE_KEY = 'done_' + FORM_KEY;
+function saveDone(info){ try { localStorage.setItem(DONE_KEY, JSON.stringify(info)); } catch(e) {} }
+function loadDone(){ try { return JSON.parse(localStorage.getItem(DONE_KEY) || 'null'); } catch(e) { return null; } }
+function renderDone(info){
+  const fc = document.getElementById('formCard');
+  fc.className = 'card success';
+  fc.style.display = 'block';
+  fc.innerHTML =
+    '<div class="big">✅</div>' +
+    '<h2>ההצבעה שלך נקלט!</h2>' +
+    '<p>' + escHtml(info.line) + '</p>' +
+    '<p class="succ-sub">נשלח ב-' + escHtml(info.at) + ' · תודה על ההשתתפות 🙏</p>' +
+    '<button class="resend" onclick="clearDone()">שלח/י שוב</button>';
+  if (typeof fabDone !== 'undefined') { fabDone = true; const fb = document.getElementById('fabSign'); if (fb) fb.classList.add('hidden'); }
+}
+function clearDone(){ try { localStorage.removeItem(DONE_KEY); } catch(e) {} location.reload(); }
+function escHtml(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let DEADLINE_OVERRIDE = null;
+function effectiveDeadline(){
+  if (DEADLINE_OVERRIDE) return DEADLINE_OVERRIDE;
+  return DEADLINE_DEFAULT ? new Date(DEADLINE_DEFAULT) : null;
+}
+function pad2(n){ return n < 10 ? '0' + n : n; }
+const DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+function fmtDate(d){ return 'יום ' + DAYS[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth()+1) + '.' + String(d.getFullYear()).slice(2) + ' בשעה ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()); }
+
+// ── דדליין: טיימר + נעילה אחרי המועד (האכיפה האמיתית בשרת) ──
+function updateDeadline() {
+  const box = document.getElementById('deadlineBox'), form = document.getElementById('formCard'), closed = document.getElementById('closedCard');
+  const dl = effectiveDeadline();
+  if (!dl || dl === 'open') { box.style.display = 'none'; closed.style.display = 'none'; return; }
+  const now = new Date();
+  if (dl === 'closed' || now > dl) {
+    form.style.display = 'none'; box.style.display = 'none'; closed.style.display = 'block';
+    if (dl !== 'closed') document.getElementById('closedText').textContent = 'המועד האחרון היה ' + fmtDate(dl) + '.';
+    return;
+  }
+  box.style.display = 'block'; closed.style.display = 'none';
+  const ms = dl - now, d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+  document.getElementById('deadlineText').textContent = '⏳ פתוח עד ' + fmtDate(dl);
+  document.getElementById('countdown').textContent = 'נותרו ' + (d > 0 ? d + ' ימים, ' : '') + h + ' שעות ו-' + pad2(m) + ' דקות';
+}
+updateDeadline();
+setInterval(updateDeadline, 30000);
+
+// ── תפריט דירות (אם f_apt הוא select) + סימון דירות שכבר נרשמו ──
+const aptSel = document.getElementById('f_apt');
+if (aptSel && aptSel.tagName === 'SELECT') {
+  for (let i = 1; i <= TOTAL; i++) { const o = document.createElement('option'); o.value = String(i); o.textContent = 'דירה ' + i; aptSel.appendChild(o); }
+}
+function markVotedApts(votedSet){
+  if (!aptSel || aptSel.tagName !== 'SELECT') return;
+  let cur = false;
+  Array.from(aptSel.options).forEach(o => {
+    const n = parseInt(o.value); if (isNaN(n)) return;
+    o.disabled = votedSet.has(n);
+    o.textContent = 'דירה ' + n + (o.disabled ? ' ✓' : '');
+    if (o.disabled && aptSel.value === o.value) cur = true;
+  });
+  if (cur) aptSel.value = '';
+  const hint = document.getElementById('aptHint'); if (hint) hint.style.display = votedSet.size ? 'block' : 'none';
+}
+
+// ── בחירה בין אפשרויות ──
+let selectedChoice = null;
+function selectChoice(v, el) {
+  selectedChoice = v;
+  document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('sel-a','sel-b'));
+  el.classList.add(el.dataset.opt === 'b' ? 'sel-b' : 'sel-a');
+}
+
+// ── חתימה (רק אם יש קנבס בטופס) ──
+const canvas = document.getElementById('sigCanvas');
+let hasSig = false;
+if (canvas) {
+  const ctx = canvas.getContext('2d'); let drawing = false;
+  function resize(){ const dpr = devicePixelRatio || 1, r = canvas.getBoundingClientRect(); if (canvas.width === r.width*dpr && canvas.height === r.height*dpr) return; canvas.width = r.width*dpr; canvas.height = r.height*dpr; ctx.scale(dpr,dpr); ctx.strokeStyle='#111'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.lineJoin='round'; }
+  setTimeout(resize, 100); addEventListener('resize', resize);
+  function pos(e){ const r=canvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left, y:t.clientY-r.top}; }
+  function down(e){ e.preventDefault(); drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); }
+  function move(e){ if(!drawing)return; e.preventDefault(); const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasSig=true; }
+  function up(){ drawing=false; }
+  canvas.addEventListener('mousedown',down); canvas.addEventListener('mousemove',move); canvas.addEventListener('mouseup',up); canvas.addEventListener('mouseleave',up);
+  canvas.addEventListener('touchstart',down,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',up);
+  window.clearSig = function(){ ctx.clearRect(0,0,canvas.width,canvas.height); hasSig=false; };
+}
+function sigDataURL(){ const s=document.createElement('canvas'); s.width=300; s.height=90; s.getContext('2d').drawImage(canvas,0,0,300,90); return s.toDataURL('image/png'); }
+
+function showErr(msg){ const e=document.getElementById('formErr'); e.textContent=msg; e.classList.add('show'); }
+
+// ── שליחה ──
+document.getElementById('submitBtn').addEventListener('click', function(){
+  const dl = effectiveDeadline();
+  if (dl && dl !== 'open' && (dl === 'closed' || new Date() > dl)) { updateDeadline(); return; }
+
+  const values = {};
+  for (const f of FIELDS) {
+    if (f === 'sig' || f === 'signature') continue;
+    if (f === 'choice') { values[f] = selectedChoice; continue; }
+    const el = document.getElementById('f_' + f);
+    values[f] = el ? el.value.trim() : '';
+  }
+  for (const f of FIELDS) {
+    if (f === 'sig' || f === 'signature') continue;
+    const el = document.getElementById('f_' + f);
+    if (el && el.dataset.optional === '1') continue;
+    if (f === 'choice') { if (!selectedChoice) { showErr('יש לבחור אפשרות'); return; } continue; }
+    if (!values[f]) { showErr('יש למלא את כל השדות המסומנים ב-*'); if (el) el.classList.add('invalid'); return; }
+    if (el) el.classList.remove('invalid');
+  }
+  if (canvas && !hasSig) { showErr('יש לחתום בשדה החתימה'); return; }
+  const dec = document.getElementById('f_declare');
+  if (dec) {
+    if (!dec.checked) { showErr('יש לאשר את ההצהרה'); dec.closest('.declare').classList.add('invalid'); return; }
+    dec.closest('.declare').classList.remove('invalid');
+  }
+  document.getElementById('formErr').classList.remove('show');
+
+  const btn = document.getElementById('submitBtn'), loading = document.getElementById('loading');
+  btn.disabled = true; loading.style.display = 'block';
+  if (canvas) values.sig = sigDataURL();
+  const apt = values.apt, choice = selectedChoice;
+
+  // Apps Script לפעמים עמוס (במיוחד כשכולם ממלאים יחד) — הודעות לפי משך ההמתנה
+  const sendText = document.getElementById('sendText'), sendSub = document.getElementById('sendSub');
+  sendText.textContent = 'שולח…'; sendSub.textContent = 'אנא המתן — לא לסגור את הדף';
+  const t1 = setTimeout(() => { sendText.textContent = 'עדיין שולח… השרת עמוס כרגע ⏳'; sendSub.textContent = 'זה קורה כשהרבה דיירים ממלאים יחד. עוד כמה שניות'; }, 6000);
+  const t2 = setTimeout(() => { sendText.textContent = 'לוקח יותר מהרגיל — אבל זה בדרך 🙏'; sendSub.textContent = 'אנא אל תסגור את הדף ואל תשלח שוב'; }, 18000);
+  function doneSending(){ clearTimeout(t1); clearTimeout(t2); btn.disabled = false; loading.style.display = 'none'; }
+  function escT(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // הקובייה של הטופס מתחלפת במקומה בהודעת ההצלחה (לא כרטיס נפרד למטה שלא רואים)
+  // שורת התיאור שנשמרת במכשיר — מותאמת אוטומטית לשדות הטופס
+  function doneLine(){
+    return (apt ? 'דירה ' + apt : '') + (choice ? ' — ' + choice : (values.name ? ' — ' + values.name : ''));
+  }
+  function onSuccess(){
+    // שמירה קבועה במכשיר — כך שגם אחרי סגירה יראה שכבר הצבעת
+    saveDone({ line: doneLine(), at: new Date().toLocaleString('he-IL') });
+    fabDone = true; fabBtn.classList.add('hidden');
+    clearTimeout(t1); clearTimeout(t2);
+    const fc = document.getElementById('formCard');
+    fc.className = 'card success'; fc.style.display = 'block';
+    fc.innerHTML = '<div class="big">✅</div><h2>נקלט בהצלחה!</h2>' +
+      '<p>' + (apt ? 'דירה ' + escT(apt) : '') + (choice ? ' — ' + escT(choice) : '') + '</p>' +
+      '<p class="succ-sub">תודה על ההשתתפות 🙏 אפשר לסגור את הדף.</p>';
+    setTimeout(() => fc.scrollIntoView({ behavior:'smooth', block:'center' }), 100);
+    loadProgress();
+  }
+  // אם התשובה מהשרת אבדה — בודקים במפה אם הרישום בכל זאת נקלט
+  function verifyViaStats(){
+    if (!apt) { doneSending(); showErr('השרת לא הגיב — נסה/י שוב בעוד רגע.'); return; }
+    sendText.textContent = 'מוודא שהרישום נקלט…'; sendSub.textContent = '';
+    fetch(SCRIPT_URL + '?action=formStats&form=' + encodeURIComponent(FORM_KEY) + '&t=' + Date.now())
+      .then(r => r.json())
+      .then(data => { if ((data.rows || []).some(r => String(r.apt) === String(apt))) onSuccess(); else { doneSending(); showErr('השרת לא הגיב בזמן — לא נראה שהרישום נקלט. נסה/י שוב בעוד רגע.'); } })
+      .catch(() => { doneSending(); showErr('אין חיבור לשרת כרגע — נסה/י שוב בעוד רגע.'); });
+  }
+
+  const ctrl = new AbortController();
+  const killer = setTimeout(() => ctrl.abort(), 45000);
+  fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, signal: ctrl.signal,
+    body: JSON.stringify({ action:'formSubmit', form:FORM_KEY, fields:FIELDS, values:values }) })  // הסיסמה מוזרקת אוטומטית ע"י ה-wrapper של BLDG_GATE
+    .then(r => r.json())
+    .then(d => {
+      clearTimeout(killer);
+      if (d.status === 'ok') onSuccess();
+      else if (d.status === 'closed') { doneSending(); updateDeadline(); }
+      else if (d.status === 'duplicate') { doneSending(); showErr('⚠️ ' + (d.message || 'דירה זו כבר נרשמה') + '. לפניות: נציגות הבניין.'); }
+      else throw new Error();
+    })
+    .catch(() => { clearTimeout(killer); verifyViaStats(); });
+});
+
+// ── חגיגת רוב (אם MAJORITY_TARGET > 0) ──
+let majShown = false;
+// בחירה בין שתי חברות: הרוב נמדד לכל חברה בנפרד — הראשונה שמגיעה ל-35 זוכה
+function checkMajority(a, b) {
+  if (!MAJORITY_TARGET) return;
+  const winner = a >= MAJORITY_TARGET ? CHOICE_YES : b >= MAJORITY_TARGET ? CHOICE_NO : null;
+  if (!winner) return;
+  const yes = winner === CHOICE_YES ? a : b, pct = Math.round(yes / TOTAL * 100);
+  document.getElementById('majBanner').textContent = '🎉 הושג רוב של ' + pct + '% — ' + yes + ' דירות בחרו ב-' + winner + '!';
+  document.getElementById('majBanner').style.display = 'block';
+  document.getElementById('majTitle').textContent = 'הושג רוב — ' + winner;
+  document.getElementById('majSub').textContent = MAJORITY_SUB;
+  document.getElementById('majPct').textContent = pct + '%';
+  document.getElementById('majCount').textContent = yes + ' דירות מתוך ' + TOTAL + ' בחרו ב-' + winner;
+  document.querySelector('.maj-stat').classList.add(winner === CHOICE_YES ? 'a' : 'b');
+  let seen = null; try { seen = localStorage.getItem('maj_seen_' + FORM_KEY); } catch(e) {}
+  if (majShown || seen) return;
+  majShown = true; try { localStorage.setItem('maj_seen_' + FORM_KEY, '1'); } catch(e) {}
+  setTimeout(() => { document.getElementById('majOverlay').classList.add('show'); startConfetti(); }, 500);
+}
+function closeMaj(){ document.getElementById('majOverlay').classList.remove('show'); stopConfetti(); }
+const cfCanvas = document.getElementById('confettiCanvas'), cfCtx = cfCanvas.getContext('2d');
+let cfRunning = false, cfPieces = [];
+const CF_COLORS = ['#1D9E75','#FFD700','#FF6B6B','#4FC3F7','#CE93D8','#FFB74D','#81C784'];
+function startConfetti(){
+  cfCanvas.style.display = 'block'; cfCanvas.width = innerWidth; cfCanvas.height = innerHeight; cfPieces = [];
+  for (let i = 0; i < 160; i++) cfPieces.push({ x: Math.random()*cfCanvas.width, y: -20 - Math.random()*cfCanvas.height*0.6, w: 7+Math.random()*6, h: 10+Math.random()*8, vy: 2+Math.random()*3, vx: -1.2+Math.random()*2.4, rot: Math.random()*Math.PI, vr: -0.12+Math.random()*0.24, color: CF_COLORS[Math.floor(Math.random()*CF_COLORS.length)] });
+  cfRunning = true; cfLoop(); setTimeout(stopConfetti, 6000);
+}
+function stopConfetti(){ cfRunning = false; }
+function cfLoop(){
+  cfCtx.clearRect(0,0,cfCanvas.width,cfCanvas.height); let alive = false;
+  cfPieces.forEach(p => { p.y += p.vy; p.x += p.vx + Math.sin(p.y/40); p.rot += p.vr; if (p.y < cfCanvas.height+30) alive = true; cfCtx.save(); cfCtx.translate(p.x,p.y); cfCtx.rotate(p.rot); cfCtx.fillStyle = p.color; cfCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cfCtx.restore(); });
+  if ((cfRunning || alive) && cfPieces.length) requestAnimationFrame(cfLoop); else cfCanvas.style.display = 'none';
+}
+
+// ── התקדמות (רק נתונים לא-אישיים מהשרת) ──
+// Apps Script איטי בקריאה הראשונה (1–4 שניות): מציגים מיד מהזיכרון המקומי ומרעננים ברקע
+const STATS_CACHE = 'stats_cache_' + FORM_KEY;
+const LD_TEXTS = ['מושך את הנתונים מהשרת המאובטח…', 'סופר…', 'עוד רגע, כמעט שם…', 'גוגל לפעמים מתעורר לאט ☕'];
+let ldTimer = null;
+function progLoading(on){
+  const el = document.getElementById('progLoading'), body = document.getElementById('progBody');
+  clearInterval(ldTimer);
+  if (!on) { el.style.display = 'none'; body.style.display = ''; return; }
+  el.style.display = 'block'; body.style.display = 'none';
+  let i = 0; document.getElementById('progLdText').textContent = LD_TEXTS[0];
+  ldTimer = setInterval(() => { i = Math.min(i + 1, LD_TEXTS.length - 1); document.getElementById('progLdText').textContent = LD_TEXTS[i]; }, 2200);
+}
+function progSync(t){ const s = document.getElementById('progSync'); if (s) s.textContent = t || ''; }
+
+function loadProgress(){
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(STATS_CACHE) || 'null'); } catch(e) {}
+  if (cached && cached.rows) { renderStats(cached); progSync('מעדכן…'); }
+  else progLoading(true);
+
+  if (GATED && !hasGate()) return;
+  fetch(SCRIPT_URL + '?action=formStats&form=' + encodeURIComponent(FORM_KEY))
+    .then(r => r.json())
+    .then(data => {
+      // 'gated' — ה-wrapper כבר ניקה את הסיסמה והחזיר את מסך הכניסה; כאן רק עוצרים את הטעינה
+      if (data.status === 'gated') { try { localStorage.removeItem(STATS_CACHE); } catch(x) {} progLoading(false); return; }
+      try { localStorage.setItem(STATS_CACHE, JSON.stringify(data)); } catch(e) {}
+      renderStats(data);
+      progSync('עודכן ✓'); setTimeout(() => progSync(''), 2000);
+    })
+    .catch(() => { progLoading(false); if (!cached) document.getElementById('progLabel').textContent = 'לא ניתן לטעון כרגע'; else progSync(''); });
+}
+
+function renderStats(data){
+  progLoading(false);
+  {
+      if (data.deadline === 'closed' || data.deadline === 'open') DEADLINE_OVERRIDE = data.deadline;
+      else if (data.deadline) { const d = new Date(data.deadline); if (!isNaN(d)) DEADLINE_OVERRIDE = d; }
+      updateDeadline();
+
+      const rows = data.rows || [], aptMap = {};
+      rows.forEach(r => { const n = parseInt(r.apt); if (!isNaN(n)) aptMap[n] = String(r.choice || ''); });
+      const voted = Object.keys(aptMap).map(Number);
+      const pct = Math.round(voted.length / TOTAL * 100);
+      document.getElementById('progLabel').innerHTML = voted.length + ' / ' + TOTAL + ' דירות (' + pct + '%)' + '<span class="prog-sync" id="progSync"></span>';
+      document.getElementById('progFill').style.width = pct + '%';
+
+      const withChoice = !!CHOICE_YES;
+      let yes = 0, no = 0;
+      if (withChoice) {
+        yes = voted.filter(a => aptMap[a] === CHOICE_YES).length; no = voted.filter(a => aptMap[a] === CHOICE_NO).length;
+        document.getElementById('voteSum').classList.add('on');
+        document.getElementById('cntYes').textContent = yes; document.getElementById('cntNo').textContent = no;
+        document.getElementById('lblYes').textContent = CHOICE_YES; document.getElementById('lblNo').textContent = CHOICE_NO;
+      }
+      document.getElementById('legend').innerHTML =
+        '<span><span class="sw apt-a"></span> ' + CHOICE_YES + '</span><span><span class="sw apt-b"></span> ' + CHOICE_NO + '</span><span><span class="sw" style="background:#f5f5f5;border:1px dashed #e0e0e0"></span> טרם</span>';
+      const grid = document.getElementById('aptGrid'); grid.innerHTML = '';
+      for (let i = 1; i <= TOTAL; i++) {
+        const c = document.createElement('div');
+        c.className = 'apt-cell ' + (!(i in aptMap) ? 'apt-off' : aptMap[i] === CHOICE_NO ? 'apt-b' : 'apt-a');
+        c.textContent = i; grid.appendChild(c);
+      }
+      // פס עליון: שורה לכל חברה. הכל מתוך 52 — המילוי, המספר וקו הרוב — כדי שלא יהיו שני מדדים סותרים.
+      if (MAJORITY_TARGET) {
+        const markAt = Math.round(MAJORITY_TARGET / TOTAL * 100) + '%';
+        document.getElementById('topProg').classList.add('on');
+        document.getElementById('tpLabel').textContent = voted.length + ' מתוך ' + TOTAL + ' דירות הצביעו (' + pct + '%)';
+        [['A', yes], ['B', no]].forEach(([s, n]) => {
+          const fill = document.getElementById('tpFill' + s);
+          fill.style.width = Math.round(n / TOTAL * 100) + '%'; fill.classList.toggle('done', n >= MAJORITY_TARGET);
+          document.getElementById('tpMark' + s).style.insetInlineStart = markAt;
+          document.getElementById('tpN' + s).textContent = n;
+        });
+        const winner = yes >= MAJORITY_TARGET ? CHOICE_YES : no >= MAJORITY_TARGET ? CHOICE_NO : null;
+        document.getElementById('tpLeft').textContent = winner ? '✓ הושג רוב — ' + winner : 'הקו הכתום = רוב נדרש, ' + MAJORITY_TARGET + ' דירות (' + Math.round(MAJORITY_TARGET / TOTAL * 100) + '%) לחברה אחת';
+        document.getElementById('tpGoal').textContent = '';
+      }
+      markVotedApts(new Set(voted));
+      checkMajority(yes, no);
+  }
+}
+const _done = loadDone();
+if (_done) renderDone(_done);
+loadProgress();
+</script>
+</body>
+</html>
