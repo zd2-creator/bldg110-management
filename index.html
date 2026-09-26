@@ -193,6 +193,13 @@
   .maj-stat.a { background:var(--a-bg); border-color:var(--a); } .maj-stat.a .big-pct, .maj-stat.a .small { color:var(--a); }
   .maj-stat.b { background:var(--b-bg); border-color:var(--b); } .maj-stat.b .big-pct, .maj-stat.b .small { color:var(--b); }
 
+  .chg-clear { margin-top:10px; font-size:11.5px; } .chg-clear a { color:#999; }
+  .chg-link { color:#2563eb; font-weight:700; }
+  .chg-cur { background:#f8f9fa; border-radius:8px; padding:9px 12px; font-size:13.5px; margin-bottom:12px; }
+  .chg-note { font-size:12px; color:#8a5a00; background:#fff8ec; border:1px solid #f5d9a8; border-radius:8px; padding:8px 12px; margin:6px 0 12px; line-height:1.5; }
+  .chg-ok { font-size:12px; color:#0d6e52; background:#e0f5ee; border-radius:8px; padding:8px 12px; margin:6px 0 12px; }
+  .chg-cancel { display:block; margin:10px auto 0; background:none; border:none; color:#888; font-size:13px; cursor:pointer; font-family:inherit; text-decoration:underline; }
+
   /* ── לוגו הבניין ── */
   .brandlogo { display:block; margin:0 auto 14px; width:280px; max-width:82%; height:auto; }
   @media print { .brandlogo { width:220px; margin-bottom:10px; } }
@@ -409,7 +416,7 @@ body.viewmode{padding-top:36px}
     <div class="grid2">
       <div class="field"><label>מספר דירה <span class="req">*</span></label>
         <select id="f_apt"><option value="" disabled selected>בחר/י דירה</option></select>
-        <span class="hint" id="aptHint" style="display:none">✓ = כבר הצביעה</span></div>
+        <span class="hint" id="aptHint" style="display:none">✓ = כבר הצביעה · <a href="#" class="chg-link" onclick="startChange();return false">רוצים לשנות בחירה?</a></span></div>
       <div class="field"><label>שם בעל/ת הדירה <span class="req">*</span></label><input id="f_name" placeholder="ישראל ישראלי" autocomplete="name" /></div>
     </div>
     <label class="declare"><input type="checkbox" id="f_declare" /><span>אני מאשר/ת שאני בעל/ת הדירה (או מטעמה), ושזו הצבעתי לבחירת חברת הניהול.</span></label>
@@ -496,7 +503,8 @@ function renderDone(info){
     '<h2>ההצבעה שלך נקלט!</h2>' +
     '<p>' + escHtml(info.line) + '</p>' +
     '<p class="succ-sub">נשלח ב-' + escHtml(info.at) + ' · תודה על ההשתתפות 🙏</p>' +
-    '<button class="resend" onclick="clearDone()">שלח/י שוב</button>';
+    '<button class="resend" onclick="startChange()">✏️ שינוי בחירה</button>' +
+    '<div class="chg-clear"><a href="#" onclick="clearDone();return false">מכשיר משותף? נקה את הזיכרון</a></div>';
   if (typeof fabDone !== 'undefined') { fabDone = true; const fb = document.getElementById('fabSign'); if (fb) fb.classList.add('hidden'); }
 }
 function clearDone(){ try { localStorage.removeItem(DONE_KEY); } catch(e) {} location.reload(); }
@@ -612,6 +620,7 @@ document.getElementById('submitBtn').addEventListener('click', function(){
   btn.disabled = true; loading.style.display = 'block';
   if (canvas) values.sig = sigDataURL();
   const apt = values.apt, choice = selectedChoice;
+  const VOTE_TOK = newTok();   // אסימון מכשיר — מאפשר לשנות בחירה מאותו מכשיר בלי אימות נוסף
 
   // Apps Script לפעמים עמוס (במיוחד כשכולם ממלאים יחד) — הודעות לפי משך ההמתנה
   const sendText = document.getElementById('sendText'), sendSub = document.getElementById('sendSub');
@@ -628,14 +637,15 @@ document.getElementById('submitBtn').addEventListener('click', function(){
   }
   function onSuccess(){
     // שמירה קבועה במכשיר — כך שגם אחרי סגירה יראה שכבר הצבעת
-    saveDone({ line: doneLine(), at: new Date().toLocaleString('he-IL') });
+    saveDone({ line: doneLine(), at: new Date().toLocaleString('he-IL'), apt: apt, choice: choice, name: values.name || '', tok: VOTE_TOK });
     fabDone = true; fabBtn.classList.add('hidden');
     clearTimeout(t1); clearTimeout(t2);
     const fc = document.getElementById('formCard');
     fc.className = 'card success'; fc.style.display = 'block';
     fc.innerHTML = '<div class="big">✅</div><h2>נקלט בהצלחה!</h2>' +
       '<p>' + (apt ? 'דירה ' + escT(apt) : '') + (choice ? ' — ' + escT(choice) : '') + '</p>' +
-      '<p class="succ-sub">תודה על ההשתתפות 🙏 אפשר לסגור את הדף.</p>';
+      '<p class="succ-sub">תודה על ההשתתפות 🙏 אפשר לסגור את הדף.</p>' +
+      '<button class="resend" onclick="startChange()">✏️ שינוי בחירה</button>';
     setTimeout(() => fc.scrollIntoView({ behavior:'smooth', block:'center' }), 100);
     loadProgress();
   }
@@ -667,7 +677,7 @@ document.getElementById('submitBtn').addEventListener('click', function(){
     const ctrl = new AbortController();
     const killer = setTimeout(() => ctrl.abort(), 30000);
     fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, signal: ctrl.signal,
-      body: JSON.stringify({ action:'formSubmit', form:FORM_KEY, fields:FIELDS, values:values }) })
+      body: JSON.stringify({ action:'formSubmit', form:FORM_KEY, fields:FIELDS, values:values, tok:VOTE_TOK }) })
       .then(r => r.json())
       .then(d => {
         clearTimeout(killer);
@@ -804,13 +814,89 @@ function renderStats(data){
         document.getElementById('tpLeft').textContent = winner ? '✓ הושג רוב — ' + winner : 'הקו הכתום = רוב נדרש, ' + MAJORITY_TARGET + ' דירות (51%) לחברה אחת';
         document.getElementById('tpGoal').textContent = ELIGIBLE + ' דירות מכורות · ' + (TOTAL - ELIGIBLE) + ' טרם נמכרו';
       }
-      markVotedApts(new Set(voted));
+      markVotedApts(new Set(voted)); VOTED = voted.slice(); APT_CHOICE = aptMap;
       checkMajority(yes, no);
   }
 }
 const _done = loadDone();
 if (_done) renderDone(_done);
 loadProgress();
+</script>
+<script>
+// ═══ שינוי בחירה ═══
+// אימות (אחד מהשניים, בשרת): אסימון המכשיר שהצביע — או השם בדיוק כפי שנרשם.
+// 3 ניסיונות שגויים לדירה נועלים את השינוי ל-24 שעות. כל שינוי נשלח במייל לוועד.
+let VOTED = [], APT_CHOICE = {};
+function newTok(){ const a = new Uint8Array(16); (crypto || window.msCrypto).getRandomValues(a); return Array.from(a, b => ('0' + b.toString(16)).slice(-2)).join(''); }
+let chgChoice = null;
+function chgPick(v, el){ chgChoice = v; document.querySelectorAll('#formCard .choice-card').forEach(c => c.classList.remove('sel-a','sel-b')); el.classList.add(el.dataset.opt === 'b' ? 'sel-b' : 'sel-a'); }
+
+function startChange(){
+  const dl = effectiveDeadline();
+  if (dl && dl !== 'open' && (dl === 'closed' || new Date() > dl)) { updateDeadline(); return; }
+  const info = loadDone() || {};
+  const known = !!(info.apt && info.tok);
+  const fc = document.getElementById('formCard');
+  fc.className = 'card'; fc.style.display = 'block'; chgChoice = null;
+  const opts = '<div class="choice-cards">' +
+    '<div class="choice-card" data-opt="a" onclick="chgPick(\'נת״מ Newmark\', this)"><div class="ic">🔵</div><div class="t">נת״מ Newmark</div></div>' +
+    '<div class="choice-card" data-opt="b" onclick="chgPick(\'נ.עליון אחזקות\', this)"><div class="ic">🟣</div><div class="t">נ.עליון אחזקות</div></div></div>';
+  let aptPart;
+  if (known) {
+    aptPart = '<div class="chg-cur">דירה <b>' + escHtml(info.apt) + '</b> · הבחירה הרשומה: <b>' + escHtml(APT_CHOICE[info.apt] || info.choice || '—') + '</b></div>' +
+              '<div class="chg-ok">✓ המכשיר הזה הצביע — אין צורך באימות נוסף</div>';
+  } else {
+    const o = VOTED.slice().sort((a,b)=>a-b).map(a => '<option value="' + a + '">דירה ' + a + '</option>').join('');
+    aptPart = '<div class="field"><label>מספר הדירה שהצביעה <span class="req">*</span></label><select id="chg_apt"><option value="" disabled selected>בחר/י דירה</option>' + o + '</select></div>' +
+              '<div class="field"><label>שם בעל/ת הדירה — בדיוק כפי שנרשם בהצבעה <span class="req">*</span></label><input id="chg_name" placeholder="ישראל ישראלי" autocomplete="name" /></div>' +
+              '<div class="chg-note">🔒 אימות: השם חייב להיות זהה לרישום המקורי. אחרי 3 ניסיונות שגויים השינוי לדירה ננעל ל-24 שעות — לפניות: נציגות הבניין.</div>';
+  }
+  fc.innerHTML = '<h2>✏️ שינוי בחירה</h2>' + aptPart +
+    '<label>הבחירה החדשה <span class="req">*</span></label>' + opts +
+    '<div id="chgErr" class="err"></div>' +
+    '<button class="btn" id="chgBtn">עדכון הבחירה ✓</button>' +
+    '<div class="sending" id="chgLoading"><span class="mini-spin"></span><span class="st">מעדכן…</span></div>' +
+    '<button class="chg-cancel" onclick="location.reload()">ביטול</button>';
+  fabDone = true; fabBtn.classList.add('hidden');
+  fc.scrollIntoView({ behavior:'smooth', block:'start' });
+  document.getElementById('chgBtn').onclick = () => submitChange(known ? info : null);
+}
+
+function submitChange(info){
+  const err = document.getElementById('chgErr'); err.classList.remove('show');
+  const apt = info ? info.apt : (document.getElementById('chg_apt') || {}).value;
+  const name = info ? '' : ((document.getElementById('chg_name') || {}).value || '').trim();
+  if (!apt) { err.textContent = 'יש לבחור דירה'; err.classList.add('show'); return; }
+  if (!info && !name) { err.textContent = 'יש להזין את השם כפי שנרשם'; err.classList.add('show'); return; }
+  if (!chgChoice) { err.textContent = 'יש לבחור את הבחירה החדשה'; err.classList.add('show'); return; }
+  const tok = info ? info.tok : newTok();   // מכשיר חדש: השרת ישמור לו אסימון אחרי אימות שם
+  const btn = document.getElementById('chgBtn'), ld = document.getElementById('chgLoading');
+  btn.disabled = true; ld.style.display = 'block';
+  const done = () => { btn.disabled = false; ld.style.display = 'none'; };
+  const fail = m => { done(); err.textContent = m; err.classList.add('show'); };
+  fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({ action:'formChange', form:FORM_KEY, apt:String(apt), choice:chgChoice, tok:tok, name:name }) })
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === 'ok' || d.status === 'same') {
+        saveDone({ line: 'דירה ' + apt + ' — ' + chgChoice, at: new Date().toLocaleString('he-IL'), apt: apt, choice: chgChoice, name: (info && info.name) || name, tok: tok });
+        const fc = document.getElementById('formCard'); fc.className = 'card success';
+        fc.innerHTML = '<div class="big">✅</div><h2>' + (d.status === 'same' ? 'זו כבר הבחירה הרשומה' : 'הבחירה עודכנה!') + '</h2>' +
+          '<p>דירה ' + escHtml(apt) + ' — ' + escHtml(chgChoice) + '</p>' +
+          '<p class="succ-sub">' + (d.status === 'same' ? 'לא נדרש שינוי.' : 'העדכון נרשם ונשלחה הודעה לנציגות 🙏') + '</p>' +
+          '<button class="resend" onclick="startChange()">✏️ שינוי בחירה</button>';
+        try { localStorage.removeItem(STATS_CACHE); } catch(e) {}
+        loadProgress();
+      }
+      else if (d.status === 'unauthorized') fail('❌ השם לא תואם לרישום' + (d.left === 1 ? ' — נותר ניסיון אחד' : d.left ? ' — נותרו ' + d.left + ' ניסיונות' : ''));
+      else if (d.status === 'changeLocked') fail('🚫 יותר מדי ניסיונות — השינוי לדירה זו ננעל ל-24 שעות. לפניות: נציגות הבניין.');
+      else if (d.status === 'notfound') fail('דירה זו עדיין לא הצביעה — אפשר להצביע רגיל.');
+      else if (d.status === 'closed') { done(); DEADLINE_OVERRIDE = 'closed'; updateDeadline(); }
+      else if (d.status === 'viewOnly') fail('מצב תצוגה — לא ניתן לשנות.');
+      else fail('שגיאה — נסה/י שוב בעוד רגע.');
+    })
+    .catch(() => fail('אין חיבור לשרת כרגע — נסה/י שוב בעוד רגע.'));
+}
 </script>
 </body>
 </html>
