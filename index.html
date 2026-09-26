@@ -193,6 +193,7 @@
   .maj-stat.a { background:var(--a-bg); border-color:var(--a); } .maj-stat.a .big-pct, .maj-stat.a .small { color:var(--a); }
   .maj-stat.b { background:var(--b-bg); border-color:var(--b); } .maj-stat.b .big-pct, .maj-stat.b .small { color:var(--b); }
 
+  .chg-row { font-size:12.5px; color:#777; margin:-4px 0 14px; text-align:start; }
   .chg-clear { margin-top:10px; font-size:11.5px; } .chg-clear a { color:#999; }
   .chg-link { color:#2563eb; font-weight:700; }
   .chg-cur { background:#f8f9fa; border-radius:8px; padding:9px 12px; font-size:13.5px; margin-bottom:12px; }
@@ -416,9 +417,10 @@ body.viewmode{padding-top:36px}
     <div class="grid2">
       <div class="field"><label>מספר דירה <span class="req">*</span></label>
         <select id="f_apt"><option value="" disabled selected>בחר/י דירה</option></select>
-        <span class="hint" id="aptHint" style="display:none">✓ = כבר הצביעה · <a href="#" class="chg-link" onclick="startChange();return false">רוצים לשנות בחירה?</a></span></div>
+        <span class="hint" id="aptHint" style="display:none">✓ = כבר הצביעה</span></div>
       <div class="field"><label>שם בעל/ת הדירה <span class="req">*</span></label><input id="f_name" placeholder="ישראל ישראלי" autocomplete="name" /></div>
     </div>
+    <div class="chg-row">כבר הצבעתם ורוצים לשנות? <a href="#" class="chg-link" onclick="startChange();return false">לשינוי בחירה ←</a></div>
     <label class="declare"><input type="checkbox" id="f_declare" /><span>אני מאשר/ת שאני בעל/ת הדירה (או מטעמה), ושזו הצבעתי לבחירת חברת הניהול.</span></label>
     <div id="formErr" class="err"></div>
     <button class="btn" id="submitBtn">שליחה ✓</button>
@@ -814,7 +816,7 @@ function renderStats(data){
         document.getElementById('tpLeft').textContent = winner ? '✓ הושג רוב — ' + winner : 'הקו הכתום = רוב נדרש, ' + MAJORITY_TARGET + ' דירות (51%) לחברה אחת';
         document.getElementById('tpGoal').textContent = ELIGIBLE + ' דירות מכורות · ' + (TOTAL - ELIGIBLE) + ' טרם נמכרו';
       }
-      markVotedApts(new Set(voted)); VOTED = voted.slice(); APT_CHOICE = aptMap;
+      markVotedApts(new Set(voted)); window.VOTED = voted.slice(); window.APT_CHOICE = aptMap;
       checkMajority(yes, no);
   }
 }
@@ -826,7 +828,7 @@ loadProgress();
 // ═══ שינוי בחירה ═══
 // אימות (אחד מהשניים, בשרת): אסימון המכשיר שהצביע — או השם בדיוק כפי שנרשם.
 // 3 ניסיונות שגויים לדירה נועלים את השינוי ל-24 שעות. כל שינוי נשלח במייל לוועד.
-let VOTED = [], APT_CHOICE = {};
+window.VOTED = window.VOTED || []; window.APT_CHOICE = window.APT_CHOICE || {};
 function newTok(){ const a = new Uint8Array(16); (crypto || window.msCrypto).getRandomValues(a); return Array.from(a, b => ('0' + b.toString(16)).slice(-2)).join(''); }
 let chgChoice = null;
 function chgPick(v, el){ chgChoice = v; document.querySelectorAll('#formCard .choice-card').forEach(c => c.classList.remove('sel-a','sel-b')); el.classList.add(el.dataset.opt === 'b' ? 'sel-b' : 'sel-a'); }
@@ -843,10 +845,13 @@ function startChange(){
     '<div class="choice-card" data-opt="b" onclick="chgPick(\'נ.עליון אחזקות\', this)"><div class="ic">🟣</div><div class="t">נ.עליון אחזקות</div></div></div>';
   let aptPart;
   if (known) {
-    aptPart = '<div class="chg-cur">דירה <b>' + escHtml(info.apt) + '</b> · הבחירה הרשומה: <b>' + escHtml(APT_CHOICE[info.apt] || info.choice || '—') + '</b></div>' +
+    aptPart = '<div class="chg-cur">דירה <b>' + escHtml(info.apt) + '</b> · הבחירה הרשומה: <b>' + escHtml((window.APT_CHOICE || {})[info.apt] || info.choice || '—') + '</b></div>' +
               '<div class="chg-ok">✓ המכשיר הזה הצביע — אין צורך באימות נוסף</div>';
   } else {
-    const o = VOTED.slice().sort((a,b)=>a-b).map(a => '<option value="' + a + '">דירה ' + a + '</option>').join('');
+    let votedList = [...document.querySelectorAll('.apt-cell.apt-a, .apt-cell.apt-b')].map(c => parseInt(c.textContent)).filter(n => !isNaN(n));
+    if (!votedList.length) votedList = (window.VOTED || []).slice();
+    if (!votedList.length) { loadProgress(); }   // עדיין אין נתונים — מושך, והרשימה תתמלא ברענון הבא
+    const o = votedList.sort((a,b)=>a-b).map(a => '<option value="' + a + '">דירה ' + a + '</option>').join('');
     aptPart = '<div class="field"><label>מספר הדירה שהצביעה <span class="req">*</span></label><select id="chg_apt"><option value="" disabled selected>בחר/י דירה</option>' + o + '</select></div>' +
               '<div class="field"><label>שם בעל/ת הדירה — בדיוק כפי שנרשם בהצבעה <span class="req">*</span></label><input id="chg_name" placeholder="ישראל ישראלי" autocomplete="name" /></div>' +
               '<div class="chg-note">🔒 אימות: השם חייב להיות זהה לרישום המקורי. אחרי 3 ניסיונות שגויים השינוי לדירה ננעל ל-24 שעות — לפניות: נציגות הבניין.</div>';
