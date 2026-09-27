@@ -276,7 +276,7 @@ function render(entries){
     document.getElementById('statsRow').style.gridTemplateColumns = '1fr 1fr';
   }
 
-  const labels = { apt:'דירה', name:'שם', phone:'טלפון', email:'מייל', choice:'הצבעה', floor:'קומה', sig:'חתימה', signature:'חתימה', ts:'מועד' };
+  const labels = { apt:'דירה', name:'שם', phone:'טלפון', email:'מייל', choice:'הצבעה', floor:'קומה', sig:'חתימה', signature:'חתימה', ts:'מועד', prev:'בחירה קודמת', chg:'שינויים' };
   const cols = entries.length ? Object.keys(entries[0]).filter(c => c !== 'ts').concat('ts') : [];
   document.getElementById('thead').innerHTML = '<th>#</th>' + cols.map(c => '<th>' + esc(labels[c] || c) + '</th>').join('');
 
