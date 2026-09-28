@@ -836,7 +836,7 @@ loadProgress();
 <script>
 // ═══ שינוי בחירה ═══
 // אימות (אחד מהשניים, בשרת): אסימון המכשיר שהצביע — או השם בדיוק כפי שנרשם.
-// 3 ניסיונות שגויים לדירה נועלים את השינוי ל-24 שעות. כל שינוי נשלח במייל לוועד.
+// 3 ניסיונות שגויים לדירה נועלים את השינוי ל-24 שעות. כל שינוי נרשם בגיליון.
 window.VOTED = window.VOTED || []; window.APT_CHOICE = window.APT_CHOICE || {};
 function newTok(){ const a = new Uint8Array(16); (crypto || window.msCrypto).getRandomValues(a); return Array.from(a, b => ('0' + b.toString(16)).slice(-2)).join(''); }
 let chgChoice = null;
@@ -897,7 +897,7 @@ function submitChange(info){
         const fc = document.getElementById('formCard'); fc.className = 'card success';
         fc.innerHTML = '<div class="big">✅</div><h2>' + (d.status === 'same' ? 'זו כבר הבחירה הרשומה' : 'הבחירה עודכנה!') + '</h2>' +
           '<p>דירה ' + escHtml(apt) + ' — ' + escHtml(chgChoice) + '</p>' +
-          '<p class="succ-sub">' + (d.status === 'same' ? 'לא נדרש שינוי.' : 'העדכון נרשם ונשלחה הודעה לנציגות 🙏') + '</p>' +
+          '<p class="succ-sub">' + (d.status === 'same' ? 'לא נדרש שינוי.' : 'העדכון נרשם 🙏') + '</p>' +
           '<button class="resend" onclick="startChange()">✏️ שינוי בחירה</button>';
         try { localStorage.removeItem(STATS_CACHE); } catch(e) {}
         loadProgress();
