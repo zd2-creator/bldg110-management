@@ -163,6 +163,7 @@
   .apt-yes { background:#e0f5ee; color:#0F6E56; border:1px solid #9FE1CB; }
   .apt-no  { background:#fdecea; color:#c0392b; border:1px solid #f5c6c0; }
   .apt-off { background:#f5f5f5; color:#ccc; border:1px dashed #e0e0e0; }
+  .apt-unsold { background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 4px,#e4e4e4 4px,#e4e4e4 8px); color:#bbb; border:1px solid #e0e0e0; text-decoration:line-through; }
   .success .resend { margin-top:16px; background:none; border:1px solid #9FE1CB; color:#0d6e52; border-radius:8px; padding:8px 18px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; }
 
   /* ── מפתח ניהול בתחתית ── */
@@ -473,6 +474,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxn7f1-PycwsK8oh9uEl
 const FORM_KEY   = 'ניהול';        // שם הלשונית בגיליון
 const FIELDS     = ['apt','name','choice'];       // שמות השדות בסדר קבוע (בלי 'declare')
 const TOTAL      = 52;                     // מספר הדירות בבניין (תפריט + מפה)
+const UNSOLD = [27, 31, 35, 39, 43];   // דירות שטרם נמכרו — לא מצביעות (מסומנות במפה, לא בתפריט)
 const ELIGIBLE   = 47;                     // דירות מכורות — המכנה לאחוזים ולרוב (5 טרם נמכרו)
 const DEADLINE_DEFAULT = '2026-10-03T14:00:00+03:00'; // ISO כמו '2026-09-06T23:59:59+03:00', או '' לטופס ללא מועד
 const CHOICE_YES = 'נת״מ Newmark';      // ערך ה"כן" בשדה choice (למשל 'בעד'); '' אם אין שדה בחירה
@@ -557,7 +559,7 @@ setInterval(updateDeadline, 30000);
 // ── תפריט דירות (אם f_apt הוא select) + סימון דירות שכבר נרשמו ──
 const aptSel = document.getElementById('f_apt');
 if (aptSel && aptSel.tagName === 'SELECT') {
-  for (let i = 1; i <= TOTAL; i++) { const o = document.createElement('option'); o.value = String(i); o.textContent = 'דירה ' + i; aptSel.appendChild(o); }
+  for (let i = 1; i <= TOTAL; i++) { if (UNSOLD.includes(i)) continue; const o = document.createElement('option'); o.value = String(i); o.textContent = 'דירה ' + i; aptSel.appendChild(o); }
 }
 function markVotedApts(votedSet){
   if (!aptSel || aptSel.tagName !== 'SELECT') return;
@@ -803,11 +805,12 @@ function renderStats(data){
         document.getElementById('lblYes').textContent = CHOICE_YES; document.getElementById('lblNo').textContent = CHOICE_NO;
       }
       document.getElementById('legend').innerHTML =
-        '<span><span class="sw apt-a"></span> ' + CHOICE_YES + '</span><span><span class="sw apt-b"></span> ' + CHOICE_NO + '</span><span><span class="sw" style="background:#f5f5f5;border:1px dashed #e0e0e0"></span> טרם</span>';
+        '<span><span class="sw apt-a"></span> ' + CHOICE_YES + '</span><span><span class="sw apt-b"></span> ' + CHOICE_NO + '</span><span><span class="sw" style="background:#f5f5f5;border:1px dashed #e0e0e0"></span> טרם</span>' + (UNSOLD.length ? '<span><span class="sw apt-unsold"></span> טרם נמכרה</span>' : '');
       const grid = document.getElementById('aptGrid'); grid.innerHTML = '';
       for (let i = 1; i <= TOTAL; i++) {
         const c = document.createElement('div');
-        c.className = 'apt-cell ' + (!(i in aptMap) ? 'apt-off' : aptMap[i] === CHOICE_NO ? 'apt-b' : 'apt-a');
+        c.className = 'apt-cell ' + (UNSOLD.includes(i) ? 'apt-unsold' : !(i in aptMap) ? 'apt-off' : aptMap[i] === CHOICE_NO ? 'apt-b' : 'apt-a');
+        if (UNSOLD.includes(i)) c.title = 'טרם נמכרה';
         c.textContent = i; grid.appendChild(c);
       }
       // פס עליון: שורה לכל חברה. הכל מתוך 52 — המילוי, המספר וקו הרוב — כדי שלא יהיו שני מדדים סותרים.
